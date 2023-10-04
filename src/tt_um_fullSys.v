@@ -1,4 +1,4 @@
-module fullSys (
+module tt_um_fullSys (
 	input i_clk_in,
 	output wire[6:0] o_disp);
 	
