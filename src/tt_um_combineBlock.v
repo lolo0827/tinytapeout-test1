@@ -17,8 +17,7 @@ output wire [7:0] uio_oe
 wire clk_div;
 
 // Add register to pipeline clock
-(* dont_touch = "true"
- ASYNC_REG = "true" *)
+(* dont_touch = "true", ASYNC_REG = "true" *)
 reg clk_div_reg;
 
 always @(posedge clk or negedge rst_n) begin
