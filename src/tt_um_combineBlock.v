@@ -2,6 +2,7 @@ module tt_um_combineBlock(
 
 input wire clk,
 input wire rst_n,
+input wire ena,
 
 input wire [7:0] ui_in,
 output wire [7:0] uo_out,
