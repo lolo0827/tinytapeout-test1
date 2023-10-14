@@ -1,47 +1,55 @@
-module tt_um_combineBlock (
+module tt_um_combineBlock(
 
-    input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
-    output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 segment display
-    input  wire [7:0] uio_in,   // IOs: Bidirectional Input path
-    output wire [7:0] uio_out,  // IOs: Bidirectional Output path
-    output wire [7:0] uio_oe,   // IOs: Bidirectional Enable path (active high: 0=input, 1=output)
-    input  wire       ena,      // will go high when the design is enabled
-    input  wire       clk,      // clock
-    input  wire       rst_n     // reset_n - low to reset
+input wire clk,
+input wire rst_n,
+
+input wire [7:0] ui_in,
+output wire [7:0] uo_out,
+
+input wire [7:0] uio_in,
+output wire [7:0] uio_out,
+
+output wire [7:0] uio_oe
 
 );
 
-	//input i_clk_in,
-	//input ena,
-	//input wire[7:0] indexSelectLine,
-	//output reg o_clk_out,
-	//output wire[6:0] o_disp);
-	
-	reg  clk_out_reg; 
-	
-	wire i_clk_in = clk;
-    wire[7:0] indexSelectLine = ui_in[7:0];
-    wire clk_out;
-    wire[3:0] coun_int;
-	wire[6:0] o_disp = uo_out[7:1];
-	
-	assign uio_oe = 8'b11111111;
-	assign uio_out = 8'b11111111;
-	
-	
-	// Included enable pin for tapeout purpose
-	clk_divider c0 (.i_clkPin(i_clk_in), .o_clkPin(clk_out), .i_indexSelectLine(indexSelectLine), .i_ena(ena));
-	counters c1 (.clk(clk_out), .cout(coun_int), .i_ena(ena));
-	final_block c2 (.num_in(coun_int), .disp(o_disp), .i_ena(ena));
-	
-	always @(*) begin
-         if (!rst_n)
-            clk_out_reg <= 0;  // reset value
-        else
-            clk_out_reg <= clk_out;
-   end
-	
-	assign uo_out[0] = clk_out_reg;  // continuous assignment from reg to wire
-	
+// Pass clock directly
+wire clk_div;
+
+// Add register to pipeline clock
+(* dont_touch = "true" )
+( ASYNC_REG = "true" *)
+reg clk_div_reg;
+
+always @(posedge clk or negedge rst_n) begin
+if(~rst_n) begin
+clk_div_reg <= 1'b0;
+end else begin
+clk_div_reg <= clk_div;
+end
+end
+
+assign clk_div = clk_div_reg;
+
+// Instance modules
+clk_divider c0(.clk(clk), .clk_out(clk_div));
+
+counters c1(.clk(clk_div));
+
+final_block c2(.clk(clk_div));
+
+// IO assignments
+assign uio_oe = 8'b11111111;
+assign uio_out = 8'b11111111;
+
+always @(*) begin
+if(!rst_n) begin
+uo_out <= 8'b00000000;
+end else begin
+uo_out[0] <= clk_div_reg;
+uo_out[7:1] <= c2.disp;
+end
+end
+
 endmodule
 	
