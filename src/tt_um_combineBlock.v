@@ -20,12 +20,13 @@ module tt_um_combineBlock (
 	reg  clk_out_reg; 
 	
 	wire i_clk_in = clk;
-   wire[7:0] indexSelectLine = ui_in[7:0];
-   wire clk_out;
-   wire[3:0] coun_int;
+    wire[7:0] indexSelectLine = ui_in[7:0];
+    wire clk_out;
+    wire[3:0] coun_int;
 	wire[6:0] o_disp = uo_out[7:1];
 	
 	assign uio_oe = 8'b11111111;
+	assign uio_out = 8'b11111111;
 	
 	
 	// Included enable pin for tapeout purpose
