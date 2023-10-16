@@ -75,14 +75,14 @@ module clk_divider (
 
     reg [32:0] n_next, n;
 
-    always @(*) begin
+    always @(posedge i_clkPin) begin
         n_next = i_indexSelectLine == 0 ? 1 : ((20000000 - 1) * i_indexSelectLine / 255) + 1;
     end
 
     reg t_internal = 0;
     reg[32:0] counts = 0;
 
-    always @ (posedge i_clkPin or negedge i_rst_n) begin
+    always @ (posedge i_clkPin) begin
         if (!i_rst_n) begin
             n <= 1;
             counts <= 0;
