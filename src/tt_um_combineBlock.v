@@ -30,7 +30,7 @@ module tt_um_combineBlock (
 	
 	
 	// Included enable pin for tapeout purpose
-	clk_divider c0 (.i_clkPin(i_clk_in), .o_clkPin(clk_out), .i_indexSelectLine(indexSelectLine), .i_ena(ena), i_rst_n(rst_n);
+	clk_divider c0 (.i_clkPin(i_clk_in), .o_clkPin(clk_out), .i_indexSelectLine(indexSelectLine), .i_ena(ena), i_rst_n(rst_n));
 	counters c1 (.clk(clk_out), .cout(coun_int), .i_ena(ena));
 	final_block c2 (.num_in(coun_int), .disp(o_disp), .i_ena(ena));
 	
